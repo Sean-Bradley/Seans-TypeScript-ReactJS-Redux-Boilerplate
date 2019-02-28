@@ -25,7 +25,7 @@ class App extends React.Component<{}, {}> {
                             <Route path='/birds' render={() => <Section sub="Birds" />} /> />
                         </Switch>
                     </div>
-                    <Footer url="https://homeidea3d.com"></Footer>
+                    <Footer url="https://github.com/Sean-Bradley/Seans-TypeScript-ReactJS-Redux-Boilerplate"></Footer>
                 </div>
             </BrowserRouter>
         )

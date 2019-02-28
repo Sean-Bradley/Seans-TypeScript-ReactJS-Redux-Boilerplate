@@ -1,0 +1,44 @@
+{
+  "name": "seans-typescript-reactjs-redux-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build && node server.js",
+    "build": "./node_modules/.bin/webpack",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "gh-pages -d dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "gh-pages": "^2.0.1",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
+    "react-redux": "^6.0.1",
+    "react-router-dom": "^4.3.1",
+    "typescript": "^3.3.3333"
+  },
+  "devDependencies": {
+    "@types/node": "^11.9.5",
+    "@types/react": "^16.8.5",
+    "@types/react-datepicker": "^2.0.3",
+    "@types/react-dom": "^16.8.2",
+    "@types/react-redux": "^7.0.1",
+    "@types/react-router-dom": "^4.3.1",
+    "@types/react-table": "^6.7.22",
+    "css-loader": "^2.1.0",
+    "html-webpack-plugin": "^3.2.0",
+    "react-datepicker": "^2.1.0",
+    "react-table": "^6.9.2",
+    "source-map-loader": "^0.2.4",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^5.3.3",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-middleware": "^3.6.0",
+    "webpack-hot-middleware": "^2.24.3"
+  }
+}

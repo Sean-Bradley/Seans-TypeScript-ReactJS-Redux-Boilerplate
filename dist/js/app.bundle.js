@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "62526bf95a4da53e8cdc";
+/******/ 	var hotCurrentHash = "82947159d465337b5f55";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -37034,14 +37034,14 @@ function getAllData() {
     return { type: 'GET_ALL_DATA' };
 }
 exports.getAllData = getAllData;
-function postNewData(name) {
+function addNewData(name) {
     const result = {
-        type: 'UPDATE_DATA',
+        type: 'ADD_NEW_DATA',
         name
     };
     return result;
 }
-exports.postNewData = postNewData;
+exports.addNewData = addNewData;
 function updateData(row, value) {
     const result = {
         type: 'UPDATE_DATA',
@@ -37051,6 +37051,14 @@ function updateData(row, value) {
     return result;
 }
 exports.updateData = updateData;
+function deleteData(id) {
+    const result = {
+        type: 'DELETE_DATA',
+        id
+    };
+    return result;
+}
+exports.deleteData = deleteData;
 
 
 /***/ }),
@@ -37099,24 +37107,10 @@ const actions_1 = __webpack_require__(/*! ./../actions */ "./src/actions/index.t
 class Cats extends React.Component {
     constructor(props) {
         super(props);
-        this.updateData = () => {
-            const dataLength = this.props.data.length;
-            this.props.updateData(dataLength - 1, 'Updated');
-        };
         this.handleDeleteClick = (e, id) => {
-            console.log("in handleDeleteClick " + id.value);
-        };
-        this.handleEditClick = (e, id) => {
-            console.log("in handleEditClick " + id.value);
-        };
-        this.handleSaveEdit = (id) => {
-            console.log("in handleSaveEdit " + id.value);
-        };
-        this.handleCancelEdit = (id) => {
-            console.log("in handleCancelEdit " + id.value);
+            this.props.deleteData(id);
         };
         this.handleAddClick = () => {
-            console.log("in handleAddClick");
             this.props.addData(this.state.catName);
             this.setState((current) => ({ ...current, catName: '' }), () => { this.props.loadData; });
         };
@@ -37155,12 +37149,24 @@ class Cats extends React.Component {
                 }, {
                     id: 'delete',
                     accessor: 'id',
-                    Cell: ((value) => React.createElement("button", { className: "btn btn-danger", onClick: (e) => this.handleDeleteClick(e, value) }, "Delete"))
+                    Cell: ((row) => React.createElement("button", { className: "btn btn-danger", onClick: (e) => this.handleDeleteClick(e, row.value) }, "Delete"))
                 }]
         };
+        this.handleEditClick = this.handleEditClick.bind(this);
+        this.handleCancelEdit = this.handleCancelEdit.bind(this);
+        this.handleSaveEdit = this.handleSaveEdit.bind(this);
     }
     componentDidMount() {
         this.props.loadData();
+    }
+    handleEditClick(e, id) {
+        console.log("in handleEditClick " + id.value);
+    }
+    handleSaveEdit(id) {
+        console.log("in handleSaveEdit " + id.value);
+    }
+    handleCancelEdit(id) {
+        console.log("in handleCancelEdit " + id.value);
     }
     render() {
         let addCatOptions;
@@ -37176,12 +37182,13 @@ class Cats extends React.Component {
                     React.createElement("label", { htmlFor: "catName" }, "Cat Name:"),
                     React.createElement("input", { type: "text", name: "catName", className: "form-control", value: this.state.catName, onChange: this.handleAddChange, placeholder: "Cat Name" }),
                     addCatOptions)),
-            React.createElement(react_table_1.default, { data: this.props.data, columns: this.state.columns, defaultPageSize: 5, className: "-striped -highlight" }),
+            React.createElement(react_table_1.default, { data: this.props.data, columns: this.state.columns, defaultPageSize: 5, className: "-striped -highlight", onFetchData: (state, instance) => {
+                    console.log("in onFetchData");
+                } }),
             React.createElement("hr", null)));
     }
 }
 function mapStateToProps(state) {
-    console.log(state);
     return {
         data: state.data
     };
@@ -37191,10 +37198,13 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(actions_1.getAllData());
     },
     addData: (name) => {
-        dispatch(actions_1.postNewData(name));
+        dispatch(actions_1.addNewData(name));
     },
     updateData: (row, value) => {
         dispatch(actions_1.updateData(row, value));
+    },
+    deleteData: (id) => {
+        dispatch(actions_1.deleteData(id));
     }
 });
 exports.default = react_redux_1.connect(mapStateToProps, mapDispatchToProps)(Cats);
@@ -37383,6 +37393,10 @@ class CatController {
         this.cats[newUuid] = { id: newUuid, genus: "feline", name: name, isHungry: true, lastFedDate: new Date().toUTCString() };
         return this.cats[newUuid];
     }
+    deleteData(id) {
+        delete this.cats[id];
+        return this.cats;
+    }
 }
 exports.default = CatController;
 
@@ -37402,19 +37416,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const redux_1 = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
 const Cat_1 = __webpack_require__(/*! ../controllers/Cat */ "./src/controllers/Cat.ts");
 const catsController = new Cat_1.default();
-const data = (state, action) => {
+const data = (state = [], action) => {
     switch (action.type) {
-        case 'POST_NEW_DATA':
-            return [
+        case 'DELETE_DATA':
+            console.log(action.id);
+            return Object.values(catsController.deleteData(action.id));
+        case 'ADD_NEW_DATA':
+            const newDataResult = [
                 ...state,
                 catsController.addNewData(action.name)
             ];
+            return newDataResult;
         case 'UPDATE_DATA':
-            const result = [
+            const updateDataResult = [
                 ...state,
             ];
-            result[action.row].name = `${action.value} ${(new Date()).toString()}`;
-            return result;
+            updateDataResult[action.row].name = `${action.value} ${(new Date()).toString()}`;
+            return updateDataResult;
         case 'GET_ALL_DATA':
             const data = catsController.getAllData();
             Object.keys(data).forEach((key) => {

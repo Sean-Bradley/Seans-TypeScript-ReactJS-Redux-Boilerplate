@@ -12,11 +12,11 @@ export function addNewData(name: string) {
     return result
 }
 
-export function updateData(row: number, value: string) {
+export function updateData(id: string, name: string) {
     const result = {
         type: 'UPDATE_DATA',
-        row,
-        value
+        id,
+        name
     }
     return result
 }

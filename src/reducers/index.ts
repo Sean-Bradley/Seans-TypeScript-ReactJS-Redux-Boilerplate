@@ -7,7 +7,7 @@ const catsController: CatsController = new CatsController();
 const data = (state: any[] = [], action: any) => {
     switch (action.type) {
         case 'DELETE_DATA':
-            console.log(action.id)
+            //console.log(action.id)
             return Object.values(catsController.deleteData(action.id))
         case 'ADD_NEW_DATA':
             const newDataResult = [
@@ -18,11 +18,12 @@ const data = (state: any[] = [], action: any) => {
             return newDataResult
         case 'UPDATE_DATA':
             //console.log('UPDATE_DATA:', action);
-            const updateDataResult = [
-                ...state,
-            ];
-            updateDataResult[action.row].name = `${action.value} ${(new Date()).toString()}`;
-            return updateDataResult
+            // const updateDataResult = [
+            //     ...state,
+            // ];
+            // updateDataResult[action.row].name = `${action.value} ${(new Date()).toString()}`;
+            //return updateDataResult
+            return Object.values(catsController.updateData(action.id, action.name))
         case 'GET_ALL_DATA':
             const data = catsController.getAllData();
             Object.keys(data).forEach((key: string) => {

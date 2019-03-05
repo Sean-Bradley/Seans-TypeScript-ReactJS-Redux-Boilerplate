@@ -1,9 +1,11 @@
-export function loadData() {
-    return { type: 'LOAD_DATA' };
+
+
+export function getAllData() {
+    return { type: 'GET_ALL_DATA' };
 }
 
-export function addData() {
-    return { type: 'ADD_DATA' };
+export function postNewData() {
+    return { type: 'POST_NEW_DATA' };
 }
 
 export function updateData(row: number, value: string) {
@@ -12,7 +14,7 @@ export function updateData(row: number, value: string) {
         row,
         value
     }
-    console.log('action updateData:', result);
+    //console.log('action updateData:', result);
     return result;
 }
 

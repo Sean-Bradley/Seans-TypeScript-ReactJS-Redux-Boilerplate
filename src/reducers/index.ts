@@ -1,25 +1,29 @@
 import { combineReducers } from 'redux';
+import Cat from '../models/Cat'
+import CatsController from '../controllers/Cat'
+
+const catsController: CatsController = new CatsController();
 
 const data = (state: any[] = [], action: any) => {
     switch (action.type) {
-        case 'ADD_DATA':
+        case 'POST_NEW_DATA':
             return [
                 ...state,
                 { id: state.length + 1, name: (new Date()).toString() }
             ];
         case 'UPDATE_DATA':
-            console.log('UPDATE_DATA:', action);
+            //console.log('UPDATE_DATA:', action);
             const result = [
                 ...state,
             ];
             result[action.row].name = `${action.value} ${(new Date()).toString()}`;
             return result;
-            break;
-        case 'LOAD_DATA':
-            return [
-                { id: 1, name: 'Item 1' },
-                { id: 2, name: 'Item 2' }
-            ];
+        case 'GET_ALL_DATA':
+            const data = catsController.getAllData();
+            Object.keys(data).forEach((key: string) => {
+                data[key].id = key
+            })
+            return Object.values(data) // catsController.getAllData();
         default:
             return state;
     }

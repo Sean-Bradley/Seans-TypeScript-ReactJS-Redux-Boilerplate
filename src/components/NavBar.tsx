@@ -11,7 +11,7 @@ export class NavBar extends React.Component<IProps, {}> {
                 <nav className="navbar navbar-default">
                     <div className="container-fluid">
                         <div className="navbar-header">
-                            <Link className="navbar-brand" to='/'>Seans TypeScript React Boilerplate</Link>
+                            <Link className="navbar-brand" to='/'>Seans TypeScript ReactJS Redux Boilerplate</Link>
                         </div>
                         <ul className="nav navbar-nav">
                             <li><Link to='/'>Home</Link></li>

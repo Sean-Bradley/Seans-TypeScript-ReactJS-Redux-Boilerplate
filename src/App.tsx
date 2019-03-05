@@ -31,11 +31,6 @@ class App extends React.Component<{}, {}> {
         )
     }
 }
-//export const INCREMENT_ENTHUSIASM = 'INCREMENT_ENTHUSIASM';
-// export type INCREMENT_ENTHUSIASM = string;//typeof INCREMENT_ENTHUSIASM;
-// let sean:INCREMENT_ENTHUSIASM = "abc";
-// console.log(typeof sean);
-//
 
 const store = createStore(reducers)
 console.dir(store)
@@ -46,7 +41,6 @@ ReactDOM.render(
     ,
     document.getElementById('root')
 );
-
 
 if (module.hot) {
     module.hot.accept();

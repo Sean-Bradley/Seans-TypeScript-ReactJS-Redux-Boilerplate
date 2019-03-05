@@ -9,7 +9,7 @@ import { NavBar } from './components/NavBar';
 import { Footer } from './components/Footer';
 import { Section } from './components/Section';
 
-declare let module: any
+//declare let module: any
 
 class App extends React.Component<{}, {}> {
     render() {
@@ -33,7 +33,6 @@ class App extends React.Component<{}, {}> {
 }
 
 const store = createStore(reducers)
-console.dir(store)
 ReactDOM.render(
     <Provider store={store}>
         <App />
@@ -42,7 +41,7 @@ ReactDOM.render(
     document.getElementById('root')
 );
 
-if (module.hot) {
-    module.hot.accept();
-}
+// if (module.hot) {
+//     module.hot.accept();
+// }
 

@@ -14,7 +14,7 @@ import { Section } from './components/Section';
 class App extends React.Component<{}, {}> {
     render() {
         return (
-            <BrowserRouter>
+            <BrowserRouter basename={process.env.PUBLIC_URL}>
                 <div>
                     <NavBar></NavBar>
                     <div className="container">

@@ -9,7 +9,7 @@ export class Footer extends React.Component<IProps, {}> {
         return (
             <footer className='footer' >
                 <div className='container'>
-                    <span className='text-muted'>You can download this project from my github project page at <a href={this.props.url} target="_blank">{this.props.url}</a></span>
+                    <span className='text-muted'>You can download this project from my github project page at <a href={this.props.url} target="_blank">{this.props.url}</a>.</span>
                 </div>
             </footer>
         )

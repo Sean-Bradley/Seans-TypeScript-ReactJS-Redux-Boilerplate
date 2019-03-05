@@ -4,23 +4,24 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css'
 import DatePicker from 'react-datepicker';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { getAllData, postNewData, updateData } from './../actions';
+import { Dispatch, compose } from 'redux';
+import { getAllData, addNewData, updateData, deleteData } from './../actions';
 import Cat from '../models/Cat'
 import { number, bool } from 'prop-types';
 
 interface IProps {
     data: any[]
     loadData(): object
-    addData(): object
+    addData(name: string): object
     updateData(row: number, value: string): object
+    deleteData(id: string): object
 }
 interface IState {
     data: any[]
     editingId: any
     columns: any[]
-    addButtonEnabled: Boolean
-
+    addButtonEnabled: Boolean,
+    catName: ""
 }
 
 class Cats extends React.Component<IProps, IState> {
@@ -29,7 +30,7 @@ class Cats extends React.Component<IProps, IState> {
         this.state = {
             data: [],
             editingId: {},
-            // catName: "",
+            catName: "",
             addButtonEnabled: false,
             // lastFedDate: new Date(),
             columns: [{
@@ -59,10 +60,9 @@ class Cats extends React.Component<IProps, IState> {
             }, {
                 id: 'delete',
                 accessor: 'id',
-                Cell: ((value: any) => <button className="btn btn-danger" onClick={(e) => this.handleDeleteClick(e, value)}>Delete</button>)
+                Cell: ((row: any) => <button className="btn btn-danger" onClick={(e) => this.handleDeleteClick(e, row.value)}>Delete</button>)
             }]
         }
-        this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.handleEditClick = this.handleEditClick.bind(this);
         this.handleCancelEdit = this.handleCancelEdit.bind(this);
         this.handleSaveEdit = this.handleSaveEdit.bind(this);
@@ -70,13 +70,11 @@ class Cats extends React.Component<IProps, IState> {
     componentDidMount() {
         this.props.loadData();
     }
-    updateData = () => {
-        const dataLength = this.props.data.length;
-        this.props.updateData(dataLength - 1, 'Updated');
-    }
-    handleDeleteClick(e: any, id: any) {
-        console.log("in handleDeleteClick " + id.value)
-    }
+    // updateData = () => {
+    //     const dataLength = this.props.data.length;
+    //     this.props.updateData(dataLength - 1, 'Updated');
+    // }
+
     handleEditClick(e: any, id: any) {
         console.log("in handleEditClick " + id.value)
     }
@@ -95,20 +93,18 @@ class Cats extends React.Component<IProps, IState> {
         //     editingId,
         // });
     }
-    handleAddClick() {
-        console.log("in handleAddClick")
-        // fetch('/api/cats', {
-        //     method: 'post',
-        //     headers: {
-        //         'Content-Type': 'application/x-www-form-urlencoded',
-        //         'Cache-Control': 'no-cache'
-        //     },
-        //     body: "name=" + this.state.catName
-        // }).then(() => {
-        //     this.refreshTableData();
-        //     this.setState({ catName: '' });
-        // })
+    handleDeleteClick = (e: any, id: any): void => {
+        this.props.deleteData(id)
+    }
+    handleAddClick = (): void => {
+        this.props.addData(this.state.catName)
+        this.setState((current) => ({ ...current, catName: '' }), () => { this.props.loadData })
     };
+    handleAddChange = (e: any): void => {
+        const newCatName = e.target.value;
+        let enabled = newCatName.length >= 2 && newCatName.length <= 20;
+        this.setState((current) => ({ ...current, catName: newCatName, addButtonEnabled: enabled }))
+    }
     render() {
         let addCatOptions;
         if (this.state.addButtonEnabled) {
@@ -118,15 +114,13 @@ class Cats extends React.Component<IProps, IState> {
         }
         return (
             <div className="container">
-                {/* {this.state.data.map(cat => <Cat key={cat.id} {...cat} />)} */}
-
                 <div className="form-group form-inline">
                     <div>
                         <label htmlFor="catName">Cat Name:</label>
-                        {/* <input type="text" name="catName" className="form-control" value={this.state.catName} onChange={this.handleAddChange} placeholder="Cat Name" />
-                        {addCatOptions} */}
-                        <button onClick={() => this.props.addData()}>Add Record</button>
-                        <button onClick={this.updateData}>Update Last Record</button>
+                        <input type="text" name="catName" className="form-control" value={this.state.catName} onChange={this.handleAddChange} placeholder="Cat Name" />
+                        {addCatOptions}
+                        {/* <button onClick={() => this.props.addData()}>Add Record</button>
+                        <button onClick={this.updateData}>Update Last Record</button> */}
                     </div>
                 </div>
 
@@ -155,13 +149,16 @@ function mapStateToProps(state: IState) {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     loadData: () => {
-        dispatch(getAllData());
+        dispatch(getAllData())
     },
-    addData: () => {
-        dispatch(postNewData());
+    addData: (name: string) => {
+        dispatch(addNewData(name))
     },
     updateData: (row: number, value: string) => {
-        dispatch(updateData(row, value));
+        dispatch(updateData(row, value))
+    },
+    deleteData: (id: string) => {
+        dispatch(deleteData(id))
     }
 })
 

@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "7c6a6fb8c8983cbe51ae";
+/******/ 	var hotCurrentHash = "62526bf95a4da53e8cdc";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -37034,8 +37034,12 @@ function getAllData() {
     return { type: 'GET_ALL_DATA' };
 }
 exports.getAllData = getAllData;
-function postNewData() {
-    return { type: 'POST_NEW_DATA' };
+function postNewData(name) {
+    const result = {
+        type: 'UPDATE_DATA',
+        name
+    };
+    return result;
 }
 exports.postNewData = postNewData;
 function updateData(row, value) {
@@ -37097,12 +37101,35 @@ class Cats extends React.Component {
         super(props);
         this.updateData = () => {
             const dataLength = this.props.data.length;
-            console.log('CustomTable:', { dataLength });
             this.props.updateData(dataLength - 1, 'Updated');
+        };
+        this.handleDeleteClick = (e, id) => {
+            console.log("in handleDeleteClick " + id.value);
+        };
+        this.handleEditClick = (e, id) => {
+            console.log("in handleEditClick " + id.value);
+        };
+        this.handleSaveEdit = (id) => {
+            console.log("in handleSaveEdit " + id.value);
+        };
+        this.handleCancelEdit = (id) => {
+            console.log("in handleCancelEdit " + id.value);
+        };
+        this.handleAddClick = () => {
+            console.log("in handleAddClick");
+            this.props.addData(this.state.catName);
+            this.setState((current) => ({ ...current, catName: '' }), () => { this.props.loadData; });
+        };
+        this.handleAddChange = (e) => {
+            const newCatName = e.target.value;
+            let enabled = newCatName.length >= 2 && newCatName.length <= 20;
+            this.setState((current) => ({ ...current, catName: newCatName, addButtonEnabled: enabled }));
         };
         this.state = {
             data: [],
             editingId: {},
+            catName: "",
+            addButtonEnabled: false,
             columns: [{
                     Header: 'Id',
                     accessor: 'id'
@@ -37115,6 +37142,20 @@ class Cats extends React.Component {
                 }, {
                     Header: 'Last Fed',
                     accessor: 'lastFedDate'
+                }, {
+                    id: 'edit',
+                    accessor: 'id',
+                    Cell: (row) => (!!this.state.editingId[row.original.id] ?
+                        React.createElement("div", null,
+                            React.createElement("button", { id: "saveButton_" + row.original._id, className: "btn btn-warning", onClick: (e) => this.handleSaveEdit(row.original._id) }, "Save"),
+                            "\u00A0",
+                            React.createElement("button", { id: "cancelButton_" + row.original._id, className: "btn btn-secondary", onClick: (e) => this.handleCancelEdit(row.original._id) }, "Cancel"))
+                        :
+                            React.createElement("button", { id: "editButton_" + row.original._id, className: "btn btn-success", onClick: (e) => this.handleEditClick(e, row.value) }, "Edit"))
+                }, {
+                    id: 'delete',
+                    accessor: 'id',
+                    Cell: ((value) => React.createElement("button", { className: "btn btn-danger", onClick: (e) => this.handleDeleteClick(e, value) }, "Delete"))
                 }]
         };
     }
@@ -37123,19 +37164,24 @@ class Cats extends React.Component {
     }
     render() {
         let addCatOptions;
+        if (this.state.addButtonEnabled) {
+            addCatOptions = React.createElement("button", { onClick: this.handleAddClick, className: "btn btn-primary" }, "Add Cat");
+        }
+        else {
+            addCatOptions = React.createElement("button", { disabled: true, className: "btn btn-primary disabled" }, "Add Cat");
+        }
         return (React.createElement("div", { className: "container" },
             React.createElement("div", { className: "form-group form-inline" },
                 React.createElement("div", null,
                     React.createElement("label", { htmlFor: "catName" }, "Cat Name:"),
-                    React.createElement("button", { onClick: () => this.props.addData() }, "Add Record"),
-                    React.createElement("button", { onClick: this.updateData }, "Update Last Record"))),
-            React.createElement(react_table_1.default, { data: this.props.data, columns: this.state.columns, defaultPageSize: 5, className: "-striped -highlight", onFetchData: (state, instance) => {
-                    console.log("in onFetchData");
-                } }),
+                    React.createElement("input", { type: "text", name: "catName", className: "form-control", value: this.state.catName, onChange: this.handleAddChange, placeholder: "Cat Name" }),
+                    addCatOptions)),
+            React.createElement(react_table_1.default, { data: this.props.data, columns: this.state.columns, defaultPageSize: 5, className: "-striped -highlight" }),
             React.createElement("hr", null)));
     }
 }
 function mapStateToProps(state) {
+    console.log(state);
     return {
         data: state.data
     };
@@ -37144,8 +37190,8 @@ const mapDispatchToProps = (dispatch) => ({
     loadData: () => {
         dispatch(actions_1.getAllData());
     },
-    addData: () => {
-        dispatch(actions_1.postNewData());
+    addData: (name) => {
+        dispatch(actions_1.postNewData(name));
     },
     updateData: (row, value) => {
         dispatch(actions_1.updateData(row, value));
@@ -37326,13 +37372,17 @@ const uuid_1 = __webpack_require__(/*! uuid */ "./node_modules/uuid/index.js");
 class CatController {
     constructor() {
         this.cats = {};
-        this.cats[uuid_1.v4()] = { id: "123", genus: "feline", name: "Cosmo", isHungry: true, lastFedDate: new Date().toUTCString() };
-        this.cats[uuid_1.v4()] = { id: "123", genus: "feline", name: "Emmy", isHungry: true, lastFedDate: new Date().toUTCString() };
+        this.cats[uuid_1.v4()] = { id: null, genus: "feline", name: "Cosmo", isHungry: true, lastFedDate: new Date().toUTCString() };
+        this.cats[uuid_1.v4()] = { id: null, genus: "feline", name: "Emmy", isHungry: true, lastFedDate: new Date().toUTCString() };
     }
     getAllData() {
         return this.cats;
     }
-    ;
+    addNewData(name) {
+        const newUuid = uuid_1.v4();
+        this.cats[newUuid] = { id: newUuid, genus: "feline", name: name, isHungry: true, lastFedDate: new Date().toUTCString() };
+        return this.cats[newUuid];
+    }
 }
 exports.default = CatController;
 
@@ -37352,12 +37402,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const redux_1 = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
 const Cat_1 = __webpack_require__(/*! ../controllers/Cat */ "./src/controllers/Cat.ts");
 const catsController = new Cat_1.default();
-const data = (state = [], action) => {
+const data = (state, action) => {
     switch (action.type) {
         case 'POST_NEW_DATA':
             return [
                 ...state,
-                { id: state.length + 1, name: (new Date()).toString() }
+                catsController.addNewData(action.name)
             ];
         case 'UPDATE_DATA':
             const result = [

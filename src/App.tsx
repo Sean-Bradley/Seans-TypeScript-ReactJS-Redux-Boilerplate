@@ -14,7 +14,7 @@ declare let module: any
 class App extends React.Component<{}, {}> {
     render() {
         return (
-            <BrowserRouter basename="/Seans-TypeScript-ReactJS-Redux-Boilerplate/">
+            <BrowserRouter>
                 <div>
                     <NavBar></NavBar>
                     <div className="container">

@@ -11,8 +11,9 @@ npm install
 npm start
 ```
 
-### Visit Dev
+### Visit Local
 http://localhost:3000/
 
+![Example Screenshot](screenshot.png)
 
 

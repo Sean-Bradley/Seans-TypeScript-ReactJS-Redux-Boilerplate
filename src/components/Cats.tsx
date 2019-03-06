@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css'
-import DatePicker from 'react-datepicker';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { getAllData, addNewData, updateData, deleteData } from './../actions';
@@ -18,8 +17,9 @@ interface IState {
     data: any[]
     editingId: any
     columns: any[]
-    addButtonEnabled: Boolean,
+    addButtonEnabled: Boolean
     catName: ""
+    //lastFedDate: Date
 }
 
 class Cats extends React.Component<IProps, IState> {
@@ -30,9 +30,9 @@ class Cats extends React.Component<IProps, IState> {
             editingId: {},
             catName: "",
             addButtonEnabled: false,
-            // lastFedDate: new Date(),
+            //lastFedDate: new Date(),
             columns: [{
-                Header: 'Id',
+                Header: 'Isadd',
                 accessor: 'id'
             }, {
                 Header: 'Name',
@@ -47,8 +47,17 @@ class Cats extends React.Component<IProps, IState> {
                 Header: 'Genus',
                 accessor: 'genus'
             }, {
-                Header: 'Last Fed',
+                Header: () => (
+                    <div style={{ textAlign: "left" }}>Last Fed Date</div>
+                ),
+                //id: 'lastFedDate',
                 accessor: 'lastFedDate'
+                // Cell: (row: any) => (
+                //     !!this.state.editingId[row.original.id] ?
+                //         <DatePicker id={"lastFedDate_" + row.original.id} selected={new Date(parseInt(row.original.lastFedDate))} onChange={(e) => this.handleLastFedDateChange(e, row.original.id)} />
+                //         :
+                //         (new Date(parseInt(row.original.lastFedDate)).toDateString())
+                // )
             }, {
                 id: 'edit',
                 accessor: 'id',
@@ -71,6 +80,19 @@ class Cats extends React.Component<IProps, IState> {
     componentDidMount() {
         this.props.loadData();
     }
+    // handleLastFedDateChange = (date: Date, id: string): void => {
+    //     console.log(date.toUTCString())
+    //     console.log(id)
+    //     // const data = this.state.data;
+    //     // data.forEach(function (row) {
+    //     //     if (row.id === id) {
+    //     //         row.lastFedDate = new Date(date).getTime().toString();
+    //     //     }
+    //     // })
+    //     // this.setState({
+    //     //     data: data
+    //     // });
+    // }
     handleEditClick = (e: any, id: any) => {
         const editingId = this.state.editingId;
         editingId[id] = true;

@@ -8,7 +8,7 @@
         "preserveConstEnums": true,
         "removeComments": true,
         "sourceMap": true,
-        "target": "ESNext"
+        "target": "ES6"
     },
     "include": [
         "./src/**/**/*"

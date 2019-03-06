@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "homepage": "https://sean-bradley.github.io/Seans-TypeScript-ReactJS-Redux-Boilerplate/",
   "scripts": {
     "start": "npm run build && node server.js",
     "build": "./node_modules/.bin/webpack",

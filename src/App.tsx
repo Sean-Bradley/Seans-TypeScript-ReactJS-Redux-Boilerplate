@@ -9,12 +9,12 @@ import { NavBar } from './components/NavBar';
 import { Footer } from './components/Footer';
 import { Section } from './components/Section';
 
-//declare let module: any
+declare let module: any
 
 class App extends React.Component<{}, {}> {
     render() {
         return (
-            <BrowserRouter basename={process.env.PUBLIC_URL}>
+            <BrowserRouter basename="/Seans-TypeScript-ReactJS-Redux-Boilerplate/">
                 <div>
                     <NavBar></NavBar>
                     <div className="container">
@@ -41,7 +41,7 @@ ReactDOM.render(
     document.getElementById('root')
 );
 
-// if (module.hot) {
-//     module.hot.accept();
-// }
+if (module.hot) {
+    module.hot.accept();
+}
 
